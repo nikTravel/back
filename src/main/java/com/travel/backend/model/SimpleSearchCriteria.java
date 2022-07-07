@@ -18,8 +18,8 @@ public class SimpleSearchCriteria {
 
     private List<String> propertyIds;
     private String adults;
-    private String childAges;
-    private List<String> include;
+    private List<String> childAges;
+    private String include;
     private String arrivalDate;
     private String departureDate;
 }

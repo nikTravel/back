@@ -6,7 +6,7 @@ package com.travel.backend.model;
  * @created 19/06/2022 - 7:59 PM
  */
 public enum  AccommodationTypes {
-    adult,extraAdult,child,extraChild,childBandWithoutBed
+    Adult,ExtraAdult,Child,ExtraChild,ChildBandWithoutBed
     //взрослый на основном месте
     // - взрослый на дополнительном месте
     // - ребенок на основном месте

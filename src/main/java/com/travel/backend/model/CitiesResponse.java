@@ -15,6 +15,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CititesResponse {
+public class CitiesResponse {
     private List<City> cities;
 }

@@ -1,7 +1,6 @@
 package com.travel.backend.controller.b2b;
 
 
-
 import com.travel.backend.model.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -10,8 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 /**
  * @author Simin
@@ -43,7 +40,7 @@ public class HotelApiExternalController {
     //    @Value("${app.x-api-key}")
 //    private int jwtExpirationMs;
 
-//    @ApiOperation(value = "This method is used to get the clients.")
+    //    @ApiOperation(value = "This method is used to get the clients.")
     @GetMapping("/getEvents")
     public PropertyEvents getEvents() {
         RestTemplate restTemplate = new RestTemplate();
@@ -55,7 +52,7 @@ public class HotelApiExternalController {
 
     }
 
-   // @ApiOperation(value = "This method is used to get the clients.")
+    // @ApiOperation(value = "This method is used to get the clients.")
     @GetMapping("/getProperties")
     public PropertyInfoPage getProperties() {
         RestTemplate restTemplate = new RestTemplate();
@@ -66,7 +63,7 @@ public class HotelApiExternalController {
         return restTemplate.exchange(uri, HttpMethod.GET, request, PropertyInfoPage.class).getBody();
     }
 
-   // @ApiOperation(value = "This method is used to get the clients.")
+    // @ApiOperation(value = "This method is used to get the clients.")
     @GetMapping("/getMealPlans")
     public MealPlan getMealPlans() {
         RestTemplate restTemplate = new RestTemplate();
@@ -78,7 +75,7 @@ public class HotelApiExternalController {
         return restTemplate.exchange(uri, HttpMethod.GET, request, MealPlan.class).getBody();
     }
 
-   // @ApiOperation(value = "This method is used to get the clients.")
+    // @ApiOperation(value = "This method is used to get the clients.")
     @GetMapping("/getPropertieById/{propertyId}")
     public PropertyInfoTypeWithInclude getPropertiesById(@PathVariable String propertyId) {
         RestTemplate restTemplate = new RestTemplate();
@@ -91,7 +88,7 @@ public class HotelApiExternalController {
         return responseEntity.getBody();
     }
 
-  //  @ApiOperation(value = "This method is used to get the clients.")
+    //  @ApiOperation(value = "This method is used to get the clients.")
     @GetMapping("/getCategories")
     public RoomTypeCategory getRoomTypeCategory() {
         RestTemplate restTemplate = new RestTemplate();
@@ -100,49 +97,45 @@ public class HotelApiExternalController {
         HttpEntity<Object> request = new HttpEntity<Object>(headers);
         String uri = "https://partner.qatl.ru/api/content/v1/room-type-categories";
         return restTemplate.exchange(uri, HttpMethod.GET, request, RoomTypeCategory.class).getBody();
-
     }
 
     ///search
-  //  @ApiOperation(value = "This method is used to get the clients.")
-    @PostMapping("/search")
-    public RoomStay search() {
+    //  @ApiOperation(value = "This method is used to get the clients.")
+    @PostMapping("/room-stays/searchByIds")
+    public AggregationSearchByPropertiesResponse searchByProperties(@RequestBody SimpleSearchCriteria simpleSearchCriteria) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
-        HttpEntity<Object> request = new HttpEntity<Object>(headers);
+        HttpEntity<SimpleSearchCriteria> request = new HttpEntity<>(simpleSearchCriteria, headers);
         String uri = "https://partner.qatl.ru/api/search/v1/properties/room-stays/search";
-
-        return restTemplate.exchange(uri, HttpMethod.POST, request, RoomStay.class).getBody();
-
+        return restTemplate.exchange(uri, HttpMethod.POST, request, AggregationSearchByPropertiesResponse.class, simpleSearchCriteria).getBody();
     }
 
-   // @ApiOperation(value = "This method is used to get the clients.")
-    @GetMapping("/getRoomStay")
-    public RoomStay getRoomStay(@RequestBody SimpleSearchCriteria criteria, String propertyId) {
+    // @ApiOperation(value = "This method is used to get the clients.")
+    @GetMapping("/properties/{propertyId}/room-stays")
+    public RoomStay getRoomStay(@RequestBody SimpleSearchCriteria criteria, @PathVariable String propertyId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
-        HttpEntity<Object> request = new HttpEntity<Object>(headers);
+        HttpEntity<SimpleSearchCriteria> request = new HttpEntity<>(criteria, headers);
         String uri = "https://partner.qatl.ru/api/search/v1/properties/" + propertyId + "/room-stays";
-        return restTemplate.exchange(uri, HttpMethod.GET, request, RoomStay.class, criteria).getBody();
-
+        return restTemplate.exchange(uri, HttpMethod.GET, request, RoomStay.class).getBody();
     }
-//reserve
-  //  @ApiOperation(value = "This method is used to get the clients.")
+
+    //reserve
+    //  @ApiOperation(value = "This method is used to get the clients.")
     @PostMapping("/bookings")
     public Booking book(@RequestBody Booking booking) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
-        HttpEntity<Object> request = new HttpEntity<Object>(headers);
+        HttpEntity<Booking> request = new HttpEntity<>(booking, headers);
         String uri = "https://partner.qatl.ru/api/reservation/v1/bookings";
-        return restTemplate.exchange(uri, HttpMethod.POST, request, Booking.class, booking).getBody();
-
+        return restTemplate.exchange(uri, HttpMethod.POST, request, Booking.class).getBody();
     }
 
 
-   // @ApiOperation(value = "This method is used to get the clients.")
+    // @ApiOperation(value = "This method is used to get the clients.")
     @GetMapping("/bookings/{number}")
     public Booking search(@PathVariable String bookNumber) {
         RestTemplate restTemplate = new RestTemplate();
@@ -160,10 +153,9 @@ public class HotelApiExternalController {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
-        HttpEntity<Object> request = new HttpEntity<Object>(headers);
+        HttpEntity<BookingCancellationRq> request = new HttpEntity<>(cancellationRq, headers);
         String uri = "https://partner.qatl.ru/api/reservation/v1/bookings/" + reserveNumber + "/cancel";
-        return restTemplate.exchange(uri, HttpMethod.POST, request, Booking.class, cancellationRq).getBody();
-
+        return restTemplate.exchange(uri, HttpMethod.POST, request, Booking.class).getBody();
     }
 
     //@ApiOperation(value = "This method is used to get the clients.")
@@ -172,27 +164,25 @@ public class HotelApiExternalController {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
-        HttpEntity<Object> request = new HttpEntity<Object>(headers);
+        HttpEntity<BookingCancellationRq> request = new HttpEntity<>(cancellationRq, headers);
         String uri = "https://partner.qatl.ru/api/reservation/v1/bookings/" + reserveNumber + "/calculate-cancellation-penalty";
-        return restTemplate.exchange(uri, HttpMethod.GET, request, Double.class, cancellationRq).getBody();
-
+        return restTemplate.exchange(uri, HttpMethod.GET, request, Double.class).getBody();
     }
 
-   // @ApiOperation(value = "This method is used to get the clients.")
+    // @ApiOperation(value = "This method is used to get the clients.")
     @PostMapping("/verify")
     public Booking verify(@RequestBody Booking booking) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
-        HttpEntity<Object> request = new HttpEntity<Object>(headers);
+        HttpEntity<Booking> request = new HttpEntity<>(booking,headers);
         String uri = "https://partner.qatl.ru/api/reservation/v1/bookings/verify";
         return restTemplate.exchange(uri, HttpMethod.POST, request, Booking.class).getBody();
-
     }
 
 
     /////GEO
-   // @ApiOperation(value = "This method is used to get the clients.")
+    // @ApiOperation(value = "This method is used to get the clients.")
     @GetMapping("/circle-search")
     public PropertiesPage circleSearch(@RequestBody CircleSearchCriteria circleSearchCriteria) {
         RestTemplate restTemplate = new RestTemplate();
@@ -205,18 +195,18 @@ public class HotelApiExternalController {
     }
 
     //@ApiOperation(value = "This method is used to get the clients.")
-    @GetMapping("/rusPropertiesSearch")
-    public PropertiesPage rusPropertiesSearch() {
+    @GetMapping("/countries/{countryCode}/properties")
+    public PropertiesPage rusPropertiesSearch(@PathVariable String countryCode) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
         HttpEntity<Object> request = new HttpEntity<Object>(headers);
-        String uri = "https://partner.qatl.ru/api/geo/v1/countries/RUS/properties";
+        String uri = "https://partner.qatl.ru/api/geo/v1/countries/" + countryCode + "/properties";
         return restTemplate.exchange(uri, HttpMethod.GET, request, PropertiesPage.class).getBody();
     }
 
-  //  @ApiOperation(value = "This method is used to get the clients.")
-    @GetMapping("/propertiesSearchByRegionId")
+    //  @ApiOperation(value = "This method is used to get the clients.")
+    @GetMapping("/regions/{regionId}/properties")
     public PropertiesPage propertiesSearchByRegionId(@PathVariable String regionId) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -238,35 +228,35 @@ public class HotelApiExternalController {
     }
 
     //@ApiOperation(value = "This method is used to get the clients.")
-    @GetMapping("/getCountries")
-    public String getCountries() {
+    @GetMapping("/Countries")
+    public CountriesResponse getCountries() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
         HttpEntity<Object> request = new HttpEntity<Object>(headers);
-        String uri = "https://partner.qatl.ru/api/geo/v1/countries/";
-        return restTemplate.exchange(uri, HttpMethod.GET, request, String.class).getBody();
+        String uri = "https://partner.qatl.ru/api/geo/v1/countries";
+        return restTemplate.exchange(uri, HttpMethod.GET, request, CountriesResponse.class).getBody();
     }
 
-   // @ApiOperation(value = "This method is used to get the clients.")
+    // @ApiOperation(value = "This method is used to get the clients.")
     @GetMapping("/countries/{countryCode}/regions")
-    public PropertiesPage getRegions(@PathVariable String countryCode) {
+    public RegionsResponse getRegions(@PathVariable String countryCode) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
         HttpEntity<Object> request = new HttpEntity<Object>(headers);
         String uri = "https://partner.qatl.ru/api/geo/v1/countries/" + countryCode + "/regions";
-        return restTemplate.exchange(uri, HttpMethod.GET, request, PropertiesPage.class).getBody();
+        return restTemplate.exchange(uri, HttpMethod.GET, request, RegionsResponse.class).getBody();
     }
 
-  //  @ApiOperation(value = "This method is used to get the clients.")
+    //  @ApiOperation(value = "This method is used to get the clients.")
     @GetMapping("/countries/{countryCode}/cities")
-    public CititesResponse getCities(@PathVariable String countryCode) {
+    public CitiesResponse getCities(@PathVariable String countryCode) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-api-key", "47306034-78fc-4767-bfd9-25e788zvezda");
         HttpEntity<Object> request = new HttpEntity<Object>(headers);
         String uri = "https://partner.qatl.ru/api/geo/v1/countries/" + countryCode + "/cities";
-        return restTemplate.exchange(uri, HttpMethod.GET, request, CititesResponse.class).getBody();
+        return restTemplate.exchange(uri, HttpMethod.GET, request, CitiesResponse.class).getBody();
     }
 }
